@@ -294,6 +294,9 @@ class AppColors {
 # Clean build
 flutter clean
 
+# Install dependecies
+flutter pub get
+
 # Build release APK
 flutter build apk --release
 
@@ -306,9 +309,6 @@ adb install build/app/outputs/flutter-apk/app-release.apk
 # Create 15 sample users
 chmod +x populate_users.sh
 ./populate_users.sh
-
-# Verify users
-./verify_users.sh
 ```
 
 ---
