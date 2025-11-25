@@ -90,6 +90,43 @@ class AuthService {
     await prefs.clear();
   }
 
+  // Register - Create new user account
+  Future<User?> register({
+    required String name,
+    required String email,
+    required String password,
+    required String role,
+  }) async {
+    // Simulate network delay
+    await Future.delayed(const Duration(seconds: 1));
+
+    try {
+      // Check if email already exists
+      final existingUser = await _userService.getUserByEmail(email);
+      if (existingUser != null) {
+        throw Exception('Email sudah terdaftar');
+      }
+
+      // Create new user via API
+      final newUser = await _userService.createUserWithParams(
+        name: name,
+        email: email,
+        password: password,
+        role: role,
+      );
+
+      if (newUser != null) {
+        print('✅ User registered: ${newUser.name} (${newUser.role})');
+        return newUser;
+      }
+
+      return null;
+    } catch (e) {
+      print('❌ Register error: $e');
+      rethrow;
+    }
+  }
+
   // Check if user is logged in
   Future<bool> isLoggedIn() async {
     final prefs = await SharedPreferences.getInstance();
