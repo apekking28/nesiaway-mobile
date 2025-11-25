@@ -70,6 +70,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       Container(
                         width: 100,
                         height: 100,
+                        padding: const EdgeInsets.all(20),
                         decoration: BoxDecoration(
                           color: AppColors.primary,
                           borderRadius: BorderRadius.circular(20),
@@ -81,10 +82,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ],
                         ),
-                        child: const Icon(
-                          Icons.landscape,
-                          size: 50,
-                          color: Colors.white,
+                        child: Image.asset(
+                          'assets/icons/nesiaway_logo.png',
+                          fit: BoxFit.contain,
                         ),
                       ),
                       const SizedBox(height: 24),
@@ -159,6 +159,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       return null;
                     },
                   ),
+
                   const SizedBox(height: 12),
 
                   // Login Button
@@ -172,6 +173,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       );
                     },
                   ),
+
+                  const SizedBox(height: 40),
 
                   // Footer
                   Text(

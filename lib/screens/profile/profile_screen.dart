@@ -121,8 +121,10 @@ class ProfileScreen extends StatelessWidget {
                         context,
                         icon: Icons.badge,
                         title: 'Role',
-                        value: 'Administrator',
-                        color: AppColors.primary,
+                        value: user.role.toUpperCase(),
+                        color: user.isAdmin
+                            ? AppColors.secondary
+                            : AppColors.primary,
                       ),
                       const SizedBox(height: 12),
                       _buildInfoCard(
@@ -159,10 +161,25 @@ class ProfileScreen extends StatelessWidget {
                   ),
                   child: Column(
                     children: [
-                      const Icon(
-                        Icons.landscape,
-                        size: 48,
-                        color: AppColors.primary,
+                      Container(
+                        width: 100,
+                        height: 100,
+                        padding: const EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.2),
+                              blurRadius: 20,
+                              offset: const Offset(0, 10),
+                            ),
+                          ],
+                        ),
+                        child: Image.asset(
+                          'assets/icons/nesiaway_logo.png',
+                          fit: BoxFit.contain,
+                        ),
                       ),
                       const SizedBox(height: 12),
                       const Text(

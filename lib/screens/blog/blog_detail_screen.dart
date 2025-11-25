@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:provider/provider.dart';
 import '../../models/blog_model.dart';
+import '../../providers/auth_provider.dart';
 import '../../utils/constants.dart';
 import 'blog_form_screen.dart';
 
@@ -151,14 +153,26 @@ class BlogDetailScreen extends StatelessWidget {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => BlogFormScreen(blog: blog)),
+      floatingActionButton: Consumer<AuthProvider>(
+        builder: (context, authProvider, _) {
+          final currentUser = authProvider.user;
+          final isAdmin = currentUser?.isAdmin ?? false;
+
+          // Only show edit button for admin
+          if (!isAdmin) {
+            return const SizedBox.shrink();
+          }
+
+          return FloatingActionButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => BlogFormScreen(blog: blog)),
+              );
+            },
+            child: const Icon(Icons.edit),
           );
         },
-        child: const Icon(Icons.edit),
       ),
     );
   }

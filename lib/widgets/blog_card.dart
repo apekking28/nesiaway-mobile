@@ -36,7 +36,7 @@ class BlogCard extends StatelessWidget {
               child: CachedNetworkImage(
                 imageUrl: blog.banner.isNotEmpty
                     ? blog.banner
-                    : 'https://via.placeholder.com/400x200?text=No+Image',
+                    : 'https://picsum.photos/400/200?random=${blog.id}',
                 height: 200,
                 width: double.infinity,
                 fit: BoxFit.cover,
@@ -45,11 +45,28 @@ class BlogCard extends StatelessWidget {
                   color: Colors.grey[300],
                   child: const Center(child: CircularProgressIndicator()),
                 ),
-                errorWidget: (context, url, error) => Container(
-                  height: 200,
-                  color: Colors.grey[300],
-                  child: const Icon(Icons.image_not_supported, size: 50),
-                ),
+                errorWidget: (context, url, error) {
+                  print('❌ Image load error for ${blog.title}: $error');
+                  return Container(
+                    height: 200,
+                    color: Colors.grey[300],
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.image_not_supported,
+                          size: 50,
+                          color: Colors.grey,
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          blog.category,
+                          style: const TextStyle(color: Colors.grey),
+                        ),
+                      ],
+                    ),
+                  );
+                },
               ),
             ),
 
