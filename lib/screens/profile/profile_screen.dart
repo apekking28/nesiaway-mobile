@@ -121,8 +121,10 @@ class ProfileScreen extends StatelessWidget {
                         context,
                         icon: Icons.badge,
                         title: 'Role',
-                        value: 'Administrator',
-                        color: AppColors.primary,
+                        value: user.role.toUpperCase(),
+                        color: user.isAdmin
+                            ? AppColors.secondary
+                            : AppColors.primary,
                       ),
                       const SizedBox(height: 12),
                       _buildInfoCard(

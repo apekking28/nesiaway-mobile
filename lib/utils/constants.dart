@@ -12,8 +12,10 @@ class Constants {
 
   // Storage Keys
   static const String keyIsLoggedIn = 'isLoggedIn';
+  static const String keyUserId = 'userId';
   static const String keyUserEmail = 'userEmail';
   static const String keyUserName = 'userName';
+  static const String keyUserRole = 'userRole';
 
   // Categories
   static const List<String> blogCategories = [

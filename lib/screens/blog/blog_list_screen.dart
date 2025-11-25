@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/blog_provider.dart';
+import '../../providers/auth_provider.dart';
 import '../../utils/constants.dart';
 import '../../widgets/blog_card.dart';
 import 'blog_detail_screen.dart';
@@ -123,6 +124,9 @@ class _BlogListScreenState extends State<BlogListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = context.watch<AuthProvider>();
+    final isAdmin = authProvider.user?.isAdmin ?? false;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('NesiaWay Blog'),
@@ -295,16 +299,19 @@ class _BlogListScreenState extends State<BlogListScreen> {
                             ),
                           );
                         },
-                        onEdit: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => BlogFormScreen(blog: blog),
-                            ),
-                          );
-                        },
-                        onDelete: () =>
-                            _showDeleteConfirmation(blog.id, blog.title),
+                        onEdit: isAdmin
+                            ? () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => BlogFormScreen(blog: blog),
+                                  ),
+                                );
+                              }
+                            : null,
+                        onDelete: isAdmin
+                            ? () => _showDeleteConfirmation(blog.id, blog.title)
+                            : null,
                       );
                     },
                   ),
@@ -314,16 +321,18 @@ class _BlogListScreenState extends State<BlogListScreen> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => const BlogFormScreen()),
-          );
-        },
-        icon: const Icon(Icons.add),
-        label: const Text('Buat Blog'),
-      ),
+      floatingActionButton: isAdmin
+          ? FloatingActionButton.extended(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const BlogFormScreen()),
+                );
+              },
+              icon: const Icon(Icons.add),
+              label: const Text('Buat Blog'),
+            )
+          : null,
     );
   }
 }

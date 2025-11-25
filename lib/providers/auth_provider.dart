@@ -10,6 +10,7 @@ class AuthProvider with ChangeNotifier {
   String? _errorMessage;
 
   User? get currentUser => _currentUser;
+  User? get user => _currentUser; // Alias untuk compatibility
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
   bool get isAuthenticated => _currentUser != null;
