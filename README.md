@@ -2,63 +2,117 @@
 
 ![Flutter](https://img.shields.io/badge/Flutter-3.0+-blue.svg)
 ![Dart](https://img.shields.io/badge/Dart-3.0+-blue.svg)
-![License](https://img.shields.io/badge/License-MIT-green.svg)
+![Status](https://img.shields.io/badge/Status-Development-yellow.svg)
+![RBAC](https://img.shields.io/badge/RBAC-Enabled-success.svg)
 
-Aplikasi mobile blog untuk menjelajahi dan berbagi keindahan Indonesia. Dibangun dengan Flutter dan menggunakan Mock API untuk CRUD operations.
+Aplikasi mobile blog untuk menjelajahi dan berbagi keindahan Indonesia. Dibangun dengan Flutter menggunakan Clean Architecture, Provider state management, dan Mock API untuk backend operations. Dilengkapi dengan sistem Role-Based Access Control (RBAC).
+
+---
 
 ## ✨ Features
 
-- 🔐 **Authentication** - Login dengan kredensial default
-- 📝 **Blog CRUD** - Create, Read, Update, Delete blog posts
-- 🔍 **Search & Filter** - Cari blog dan filter berdasarkan kategori
-- 🖼️ **Image Gallery** - Banner dan galeri foto untuk setiap blog
-- 👤 **User Profile** - Halaman profil pengguna
-- 🎨 **Modern UI** - Desain modern dengan tema Indonesia
-- 📱 **Responsive** - Tampilan yang optimal di berbagai ukuran layar
+### 🔐 Authentication & Authorization
+- Login dengan password validation
+- Role-Based Access Control (Admin & User)
+- Session management
+- Secure logout
 
-## 🚀 Getting Started
+### 👥 User Management (Admin Only)
+- Complete CRUD operations untuk users
+- User detail dengan permissions overview
+- Search & filter by role
+- Password management dengan visibility toggle
+- Self-edit protection
+
+### 📝 Blog Management
+- **Admin:** Full CRUD (Create, Read, Update, Delete)
+- **User:** Read-only access
+- Search & filter by category
+- Image gallery support
+- Multiple categories
+
+### 🎨 UI/UX
+- Material Design 3
+- Indonesian-themed colors
+- Responsive layouts
+- Loading states & error handling
+- Image caching & fallback
+
+---
+
+## 🚀 Quick Start
 
 ### Prerequisites
-
-- Flutter SDK 3.0 atau lebih tinggi
-- Dart 3.0 atau lebih tinggi
-- Android Studio / VS Code dengan Flutter extension
-- Emulator atau Physical Device
+- Flutter SDK 3.0+
+- Dart 3.0+
+- Android Studio / VS Code
+- Internet connection
 
 ### Installation
 
-1. **Clone atau Download Project**
-   ```bash
-   cd nesiaway
-   ```
+```bash
+# 1. Navigate to project
+cd nesiaway
 
-2. **Install Dependencies**
-   ```bash
-   flutter pub get
-   ```
+# 2. Install dependencies
+flutter pub get
 
-3. **Run the App**
-   ```bash
-   flutter run
-   ```
+# 3. Run the app
+flutter run
 
-## 🔑 Default Login Credentials
+# Or build APK
+flutter build apk --release
+adb install build/app/outputs/flutter-apk/app-release.apk
+```
 
+---
+
+## 🔑 Login Credentials
+
+### Default Admin (Always Available)
 ```
 Email: admin@gmail.com
 Password: admin12345
 ```
 
-## 🌐 Mock API
+### Sample Users (After running populate script)
 
-Aplikasi ini menggunakan Mock API untuk CRUD operations:
+**Admin Accounts:**
+```
+admin@nesiaway.com / admin123
+budi.admin@nesiaway.com / admin123
+siti.admin@nesiaway.com / admin123
+```
+
+**User Accounts:**
+```
+agus@example.com / user123
+rina@example.com / user123
+joko@example.com / user123
+```
+
+### Create Sample Users
+```bash
+chmod +x populate_users.sh
+./populate_users.sh
+```
+
+---
+
+## 🌐 Mock API
 
 **Base URL:** `https://691e876fbb52a1db22be25e9.mockapi.io/api/v1`
 
-**Endpoint:** `/blogs`
+### Endpoints
 
-### API Schema
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/blog` | GET, POST | Get all blogs / Create blog |
+| `/blog/:id` | GET, PUT, DELETE | Get, Update, Delete blog |
+| `/user` | GET, POST | Get all users / Create user |
+| `/user/:id` | GET, PUT, DELETE | Get, Update, Delete user |
 
+### Blog Schema
 ```json
 {
   "id": "string",
@@ -66,11 +120,200 @@ Aplikasi ini menggunakan Mock API untuk CRUD operations:
   "category": "string",
   "body": "string",
   "banner": "string (URL)",
-  "images": ["string (URL)", "string (URL)"]
+  "images": ["string (URL)"]
 }
 ```
 
-### Supported Categories
+### User Schema
+```json
+{
+  "id": "string",
+  "name": "string",
+  "email": "string",
+  "password": "string",
+  "role": "admin | user"
+}
+```
+
+---
+
+## 👑 RBAC - Permissions
+
+### Permission Matrix
+
+| Feature | Admin | User |
+|---------|-------|------|
+| View blogs | ✅ | ✅ |
+| Search/Filter | ✅ | ✅ |
+| Create blog | ✅ | ❌ |
+| Edit blog | ✅ | ❌ |
+| Delete blog | ✅ | ❌ |
+| View users | ✅ | ❌ |
+| Create user | ✅ | ❌ |
+| Edit user | ✅ | ❌ |
+| Delete user | ✅ | ❌ |
+| Change own role | ❌ | ❌ |
+
+### UI Differences
+
+**Admin:**
+- 3 tabs: Blog, Users, Profil
+- FAB "Buat Blog" visible
+- Edit & Delete buttons on cards
+- Full Users tab access
+
+**User:**
+- 2 tabs: Blog, Profil
+- No create/edit/delete buttons
+- Read-only access
+
+---
+
+## 📁 Project Structure
+
+```
+nesiaway/
+├── lib/
+│   ├── main.dart
+│   ├── models/
+│   │   ├── blog_model.dart
+│   │   └── user_model.dart
+│   ├── services/
+│   │   ├── api_service.dart
+│   │   ├── user_service.dart
+│   │   └── auth_service.dart
+│   ├── providers/
+│   │   ├── blog_provider.dart
+│   │   ├── user_provider.dart
+│   │   └── auth_provider.dart
+│   ├── screens/
+│   │   ├── auth/
+│   │   ├── home/
+│   │   ├── blog/
+│   │   ├── user/
+│   │   └── profile/
+│   ├── widgets/
+│   └── utils/
+├── android/
+├── docs/
+├── scripts/
+└── pubspec.yaml
+```
+
+---
+
+## 🎨 Tech Stack
+
+### Framework
+- Flutter 3.0+
+- Dart 3.0+
+
+### Architecture
+- Clean Architecture
+- Provider Pattern (MVVM-like)
+- Separation of concerns
+
+### Key Dependencies
+```yaml
+dependencies:
+  provider: ^6.1.1              # State management
+  http: ^1.1.0                  # HTTP requests
+  cached_network_image: ^3.3.0 # Image caching
+  shared_preferences: ^2.2.2   # Local storage
+  intl: ^0.18.1                # Date formatting
+  flutter_spinkit: ^5.2.0      # Loading indicators
+```
+
+---
+
+## 🔧 Configuration
+
+### API Configuration
+Edit `lib/utils/constants.dart`:
+
+```dart
+class Constants {
+  static const String baseUrl = 
+    'https://691e876fbb52a1db22be25e9.mockapi.io/api/v1';
+  static const String blogEndpoint = 'blog';
+  static const String userEndpoint = 'user';
+}
+```
+
+### Theme Colors
+Edit `lib/utils/constants.dart`:
+
+```dart
+class AppColors {
+  static const Color primary = Color(0xFF1E88E5);      // Blue
+  static const Color secondary = Color(0xFFFF6B35);    // Orange
+  static const Color accent = Color(0xFFFFC107);       // Yellow
+  static const Color success = Color(0xFF4CAF50);      // Green
+  static const Color error = Color(0xFFF44336);        // Red
+}
+```
+
+---
+
+## 📱 How to Use
+
+### Authentication
+1. Buka app
+2. Login dengan credentials
+3. Navigasi ke home screen
+
+### Blog Management (Admin)
+1. **View:** Browse blogs di Blog tab
+2. **Create:** Tap FAB "Buat Blog" → Isi form → Simpan
+3. **Edit:** Tap blog → Tap edit FAB → Update → Simpan
+4. **Delete:** Tap delete button di card → Konfirmasi
+5. **Search:** Gunakan search bar
+6. **Filter:** Tap kategori chip
+
+### User Management (Admin)
+1. **View:** Go to Users tab
+2. **Create:** Tap FAB → Isi form → Simpan
+3. **Detail:** Tap user card
+4. **Edit:** Tap edit button → Update → Simpan
+5. **Delete:** Tap delete button → Konfirmasi
+6. **Search:** Ketik di search bar
+7. **Filter:** Tap role chips (Semua/Admin/User)
+
+### User Experience (Non-Admin)
+1. **View Blogs:** Browse & read semua blogs
+2. **Search:** Cari blog by title/content
+3. **Filter:** Filter by kategori
+4. **Profile:** View & logout
+
+---
+
+## 🛠️ Build Scripts
+
+### Build APK
+```bash
+# Clean build
+flutter clean
+
+# Build release APK
+flutter build apk --release
+
+# Install to device
+adb install build/app/outputs/flutter-apk/app-release.apk
+```
+
+### Create Sample Data
+```bash
+# Create 15 sample users
+chmod +x populate_users.sh
+./populate_users.sh
+
+# Verify users
+./verify_users.sh
+```
+
+---
+
+## 📋 Categories
 
 - Wisata Alam
 - Kuliner
@@ -81,168 +324,34 @@ Aplikasi ini menggunakan Mock API untuk CRUD operations:
 - Festival
 - Arsitektur
 
-## 📁 Project Structure
+---
 
-```
-nesiaway/
-├── lib/
-│   ├── main.dart                 # Entry point
-│   ├── models/
-│   │   ├── blog_model.dart       # Blog data model
-│   │   └── user_model.dart       # User data model
-│   ├── services/
-│   │   ├── api_service.dart      # HTTP API calls
-│   │   └── auth_service.dart     # Authentication service
-│   ├── providers/
-│   │   ├── blog_provider.dart    # Blog state management
-│   │   └── auth_provider.dart    # Auth state management
-│   ├── screens/
-│   │   ├── auth/
-│   │   │   └── login_screen.dart
-│   │   ├── home/
-│   │   │   └── home_screen.dart
-│   │   ├── blog/
-│   │   │   ├── blog_list_screen.dart
-│   │   │   ├── blog_detail_screen.dart
-│   │   │   └── blog_form_screen.dart
-│   │   └── profile/
-│   │       └── profile_screen.dart
-│   ├── widgets/
-│   │   ├── blog_card.dart        # Reusable blog card
-│   │   └── custom_button.dart    # Reusable button
-│   └── utils/
-│       ├── constants.dart        # App constants
-│       └── theme.dart            # App theme
-├── pubspec.yaml
-└── README.md
-```
+## 🎯 Current Status
 
-## 🎨 Tech Stack
+### Completed Features ✅
+- Authentication & login validation
+- Role-Based Access Control (RBAC)
+- User management (CRUD)
+- Blog management (CRUD)
+- Search & filter
+- User detail screen
+- Self-edit protection
+- Dynamic role display
+- Image caching
 
-- **Framework:** Flutter 3.0+
-- **Language:** Dart 3.0+
-- **State Management:** Provider
-- **HTTP Client:** http package
-- **Image Caching:** cached_network_image
-- **Local Storage:** shared_preferences
-- **Architecture:** Provider Pattern (MVVM-like)
+### In Development 🔄
+- Dark theme
+- Offline mode
+- Multi-language support
 
-## 📦 Key Dependencies
+---
 
-```yaml
-dependencies:
-  flutter:
-    sdk: flutter
-  provider: ^6.1.1              # State management
-  http: ^1.1.0                  # HTTP requests
-  cached_network_image: ^3.3.0 # Image caching
-  shared_preferences: ^2.2.2   # Local storage
-  intl: ^0.18.1                # Date formatting
-  flutter_spinkit: ^5.2.0      # Loading indicators
-```
-
-## 🔧 Configuration
-
-### Mengubah Base URL
-
-Edit file `lib/utils/constants.dart`:
-
-```dart
-class Constants {
-  static const String baseUrl = 'YOUR_NEW_BASE_URL';
-  static const String blogEndpoint = 'YOUR_ENDPOINT';
-}
-```
-
-### Mengubah Theme Colors
-
-Edit file `lib/utils/constants.dart`:
-
-```dart
-class AppColors {
-  static const Color primary = Color(0xFF1E88E5);
-  static const Color secondary = Color(0xFFFF6B35);
-  // ... customize other colors
-}
-```
-
-## 📱 Screenshots
-
-### Login Screen
-- Modern login interface dengan Indonesian theme
-- Form validation
-- Default credentials info
-
-### Blog List
-- Grid/List view of blogs
-- Search functionality
-- Category filtering
-- Pull to refresh
-
-### Blog Detail
-- Full blog content
-- Image gallery
-- Edit button
-
-### Blog Form
-- Create/Edit blog
-- Category selection
-- Multiple image support
-- Form validation
-
-### Profile
-- User information
-- App info
-- Logout functionality
-
-## 🎯 Fitur CRUD
-
-### Create (Tambah Blog)
-1. Tap tombol FAB "Buat Blog"
-2. Isi form (judul, kategori, konten, banner, gambar)
-3. Tap "Simpan Blog"
-
-### Read (Lihat Blog)
-1. Browse blog di halaman utama
-2. Tap blog untuk melihat detail
-3. Gunakan search dan filter untuk mencari blog
-
-### Update (Edit Blog)
-1. Buka detail blog
-2. Tap tombol edit (FAB atau dalam card)
-3. Edit form
-4. Tap "Update Blog"
-
-### Delete (Hapus Blog)
-1. Di blog card, tap tombol "Hapus"
-2. Konfirmasi penghapusan
-3. Blog akan terhapus
-
-## 🐛 Troubleshooting
-
-### Build Issues
-
-```bash
-flutter clean
-flutter pub get
-flutter run
-```
-
-### API Connection Issues
-
-- Pastikan device/emulator terkoneksi internet
-- Cek Mock API endpoint masih aktif
-- Periksa console untuk error messages
-
-### Image Loading Issues
-
-- Pastikan URL image valid
-- Gunakan URL image dari sumber yang reliable
-- Clear app data jika cache bermasalah
-
-## 📝 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
 **Made with ❤️ for Indonesia 🇮🇩**
 
 *Bangga Menjelajah Indonesia*
+
+---
+
+**Version:** 1.0.0  
+**Status:** 🔄 Development  
+**Last Updated:** 2025-11-25
