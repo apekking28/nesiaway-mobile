@@ -12,7 +12,8 @@ Aplikasi mobile blog untuk menjelajahi dan berbagi keindahan Indonesia. Dibangun
 ## ✨ Features
 
 ### 🔐 Authentication & Authorization
-- Login dengan password validation
+- **Login** dengan password validation
+- **Register** akun baru (role: user)
 - Role-Based Access Control (Admin & User)
 - Session management
 - Secure logout
@@ -65,14 +66,48 @@ flutter build apk --release
 adb install build/app/outputs/flutter-apk/app-release.apk
 ```
 
+### First Time Setup
+
+**Option 1: Register New Account**
+1. Open app
+2. Tap "Daftar" on login screen
+3. Fill registration form (4 fields)
+4. Submit
+5. Login with new credentials
+6. 🎉 Welcome! (Role: User)
+
+**Option 2: Use Default Admin**
+1. Open app
+2. Login with default credentials
+3. 🎉 Full access! (Role: Admin)
+
 ---
 
 ## 🔑 Login Credentials
+
+### 🆕 Register New Account
+```
+1. Tap "Daftar" on login screen
+2. Fill form:
+   - Nama Lengkap (min 3 characters)
+   - Email (valid format)
+   - Password (min 6 characters)
+   - Konfirmasi Password (must match)
+3. Submit
+4. Login with your new credentials
+5. Role: User (default)
+```
+
+> 💡 **Note:** Semua akun baru otomatis mendapat role **User**.  
+> Untuk membuat **Admin**, gunakan User Management (admin only).
+
+---
 
 ### Default Admin (Always Available)
 ```
 Email: admin@gmail.com
 Password: admin12345
+Role: Admin
 ```
 
 ### Sample Users (After running populate script)
@@ -95,6 +130,51 @@ joko@example.com / user123
 ```bash
 chmod +x populate_users.sh
 ./populate_users.sh
+```
+
+---
+
+## 🆕 User Registration
+
+### How It Works
+
+NesiaWay allows users to create their own accounts through a simple registration process.
+
+**Registration Form:**
+- ✅ **Nama Lengkap** (min 3 characters)
+- ✅ **Email** (valid format, must be unique)
+- ✅ **Password** (min 6 characters, with visibility toggle)
+- ✅ **Konfirmasi Password** (must match password)
+
+**Features:**
+- 🔒 Email uniqueness check
+- 🔒 Password strength validation
+- 🔒 Automatic role assignment (User)
+- 👁️ Password visibility toggle
+- ✉️ Email format validation
+- ⚡ Real-time validation feedback
+
+**Default Role:**
+- All new accounts = **User** role
+- Admin role requires manual creation via User Management
+- Security best practice (no self-admin registration)
+
+**Flow:**
+```
+Login Screen → Tap "Daftar" → Fill Form → Validate → API Call → Success → Back to Login
+```
+
+**Create Admin:**
+```
+Method 1: Via User Management (Admin only)
+  1. Login as admin
+  2. Users tab → "+" button
+  3. Fill form → Select "Admin" role
+  4. Save
+
+Method 2: Use default admin
+  Email: admin@gmail.com
+  Password: admin12345
 ```
 
 ---
@@ -141,18 +221,27 @@ chmod +x populate_users.sh
 
 ### Permission Matrix
 
-| Feature | Admin | User |
-|---------|-------|------|
-| View blogs | ✅ | ✅ |
-| Search/Filter | ✅ | ✅ |
-| Create blog | ✅ | ❌ |
-| Edit blog | ✅ | ❌ |
-| Delete blog | ✅ | ❌ |
-| View users | ✅ | ❌ |
-| Create user | ✅ | ❌ |
-| Edit user | ✅ | ❌ |
-| Delete user | ✅ | ❌ |
-| Change own role | ❌ | ❌ |
+| Feature | Admin | User | Guest |
+|---------|-------|------|-------|
+| **Authentication** |
+| Register account | ✅ | ✅ | ✅ |
+| Login | ✅ | ✅ | - |
+| Logout | ✅ | ✅ | - |
+| **Blogs** |
+| View blogs | ✅ | ✅ | ❌ |
+| Search/Filter | ✅ | ✅ | ❌ |
+| Create blog | ✅ | ❌ | ❌ |
+| Edit blog | ✅ | ❌ | ❌ |
+| Delete blog | ✅ | ❌ | ❌ |
+| **Users** |
+| View users | ✅ | ❌ | ❌ |
+| Create user | ✅ | ❌ | ❌ |
+| Edit user | ✅ | ❌ | ❌ |
+| Delete user | ✅ | ❌ | ❌ |
+| Change own role | ❌ | ❌ | ❌ |
+
+> 💡 **Note:** Registration selalu membuat akun dengan role **User**.  
+> Admin tidak bisa dibuat via registration untuk keamanan.
 
 ### UI Differences
 
@@ -188,6 +277,8 @@ nesiaway/
 │   │   └── auth_provider.dart
 │   ├── screens/
 │   │   ├── auth/
+│   │   │   ├── login_screen.dart
+│   │   │   └── register_screen.dart
 │   │   ├── home/
 │   │   ├── blog/
 │   │   ├── user/
@@ -234,7 +325,7 @@ Edit `lib/utils/constants.dart`:
 ```dart
 class Constants {
   static const String baseUrl = 
-    'https://691e876fbb52a1db22be25e9.mockapi.io/api/v1';
+    '<your_mockup_api_url>';
   static const String blogEndpoint = 'blog';
   static const String userEndpoint = 'user';
 }
@@ -257,12 +348,31 @@ class AppColors {
 
 ## 📱 How to Use
 
-### Authentication
+### 🆕 Registration (New Users)
+1. **Open app** → Tap "Daftar"
+2. **Fill form** (4 fields required):
+   - **Nama Lengkap** - Nama lengkap Anda (min 3 karakter)
+   - **Email** - Email valid (akan digunakan untuk login)
+   - **Password** - Password (min 6 karakter)
+   - **Konfirmasi Password** - Harus sama dengan password
+3. **Submit** → Tap "Daftar" button
+4. **Success** → Kembali ke login screen
+5. **Login** → Gunakan email & password yang baru dibuat
+6. **Welcome!** → Anda akan masuk sebagai **User** (default role)
+
+> 💡 **Tips:**
+> - Semua akun baru = **User** role
+> - Tidak bisa self-register sebagai **Admin** (security)
+> - Admin hanya bisa dibuat via User Management
+
+---
+
+### 🔐 Authentication
 1. Buka app
 2. Login dengan credentials
 3. Navigasi ke home screen
 
-### Blog Management (Admin)
+### 📝 Blog Management (Admin)
 1. **View:** Browse blogs di Blog tab
 2. **Create:** Tap FAB "Buat Blog" → Isi form → Simpan
 3. **Edit:** Tap blog → Tap edit FAB → Update → Simpan
@@ -270,7 +380,7 @@ class AppColors {
 5. **Search:** Gunakan search bar
 6. **Filter:** Tap kategori chip
 
-### User Management (Admin)
+### 👥 User Management (Admin)
 1. **View:** Go to Users tab
 2. **Create:** Tap FAB → Isi form → Simpan
 3. **Detail:** Tap user card
@@ -279,7 +389,15 @@ class AppColors {
 6. **Search:** Ketik di search bar
 7. **Filter:** Tap role chips (Semua/Admin/User)
 
-### User Experience (Non-Admin)
+> 💡 **Create Admin via User Management:**
+> 1. Login sebagai admin
+> 2. Go to Users tab
+> 3. Tap "+" button
+> 4. Fill form
+> 5. Pilih role: **Admin**
+> 6. Save
+
+### 👤 User Experience (Non-Admin)
 1. **View Blogs:** Browse & read semua blogs
 2. **Search:** Cari blog by title/content
 3. **Filter:** Filter by kategori
@@ -294,7 +412,7 @@ class AppColors {
 # Clean build
 flutter clean
 
-# Install dependecies
+# Install dependencies
 flutter pub get
 
 # Build release APK
@@ -309,6 +427,9 @@ adb install build/app/outputs/flutter-apk/app-release.apk
 # Create 15 sample users
 chmod +x populate_users.sh
 ./populate_users.sh
+
+# Verify users
+./verify_users.sh
 ```
 
 ---
@@ -330,6 +451,7 @@ chmod +x populate_users.sh
 
 ### Completed Features ✅
 - Authentication & login validation
+- **User registration** (role: user)
 - Role-Based Access Control (RBAC)
 - User management (CRUD)
 - Blog management (CRUD)
