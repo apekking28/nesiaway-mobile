@@ -97,11 +97,12 @@ class _SplashScreenState extends State<SplashScreen> {
             children: [
               // Logo
               Container(
-                width: 120,
-                height: 120,
+                width: 100,
+                height: 100,
+                padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(30),
+                  borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withOpacity(0.2),
@@ -110,10 +111,9 @@ class _SplashScreenState extends State<SplashScreen> {
                     ),
                   ],
                 ),
-                child: Icon(
-                  Icons.landscape,
-                  size: 60,
-                  color: Theme.of(context).primaryColor,
+                child: Image.asset(
+                  'assets/icons/nesiaway_logo.png',
+                  fit: BoxFit.contain,
                 ),
               ),
 
