@@ -107,6 +107,47 @@ class UserService {
     }
   }
 
+  // Create user with named parameters (for registration)
+  Future<User?> createUserWithParams({
+    required String name,
+    required String email,
+    required String password,
+    required String role,
+  }) async {
+    try {
+      // Generate avatar URL
+      final avatarUrl =
+          'https://ui-avatars.com/api/?name=${Uri.encodeComponent(name)}&background=1E88E5&color=fff&size=200';
+
+      // Create user object
+      final user = User(
+        id: '', // Will be set by API
+        name: name,
+        email: email,
+        password: password,
+        role: role,
+        avatarUrl: avatarUrl,
+      );
+
+      final response = await http.post(
+        Uri.parse('$_baseUrl/$_endpoint'),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode(user.toJson()),
+      );
+
+      if (response.statusCode == 201) {
+        print('✅ User created successfully: $name ($role)');
+        return User.fromJson(json.decode(response.body));
+      } else {
+        print('❌ Failed to create user: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      print('❌ Error creating user: $e');
+      throw Exception('Error creating user: $e');
+    }
+  }
+
   // Update user
   Future<User> updateUser(String id, User user) async {
     try {

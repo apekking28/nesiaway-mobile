@@ -77,6 +77,45 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  // Register
+  Future<bool> register({
+    required String name,
+    required String email,
+    required String password,
+    required String role,
+  }) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      final user = await _authService.register(
+        name: name,
+        email: email,
+        password: password,
+        role: role,
+      );
+
+      if (user != null) {
+        // Registration successful, but don't auto-login
+        // User needs to login manually
+        _isLoading = false;
+        notifyListeners();
+        return true;
+      } else {
+        _errorMessage = 'Registrasi gagal';
+        _isLoading = false;
+        notifyListeners();
+        return false;
+      }
+    } catch (e) {
+      _errorMessage = e.toString();
+      _isLoading = false;
+      notifyListeners();
+      return false;
+    }
+  }
+
   // Clear error
   void clearError() {
     _errorMessage = null;
